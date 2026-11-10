@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# 构建产物
+Cyan Clone.app/
+Cyan-Clone.dmg
+Cyan-Clone.zip
+Cyan-Clone-release-kit.zip
+
+# 发布与开发产物（本地生成，不入库）
+release/
+release-kit/
+previews/
+dist/
+SparkleKeys/
+
+# Swift / Xcode
+.build/
+*.xcodeproj

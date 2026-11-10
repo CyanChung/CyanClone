@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="cLight" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#9fbef8"/></linearGradient>
+  </defs>
+  <path d="M47.5 19C34.5 9 13.5 17 13.5 34S34.5 59 47.5 49" fill="none" stroke="#183270" stroke-width="10" stroke-linecap="round"/>
+  <path d="M44 15C30.5 5 10 13 10 32s20.5 27 34 17" fill="none" stroke="url(#cLight)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M20 20c7-7 16-8 23-4" fill="none" stroke="#fff" stroke-opacity=".72" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M53.5 8.5a9 9 0 1 0 6.2 15.5 8.2 8.2 0 0 1-6.2-15.5z" fill="#ffd244"/>
+</svg>
