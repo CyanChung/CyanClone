@@ -41,9 +41,9 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.29</string>
+    <string>1.30</string>
     <key>CFBundleVersion</key>
-    <string>29</string>
+    <string>30</string>
     <key>SUFeedURL</key>
     <string>https://github.com/CyanChung/CyanClone/releases/latest/download/appcast.xml</string>
     <key>SUPublicEDKey</key>

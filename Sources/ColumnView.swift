@@ -1,9 +1,13 @@
 import SwiftUI
+import AppKit
 
 // MARK: - 分栏视图（Finder 的分栏浏览）
 
 struct FinderColumnView: View {
     @EnvironmentObject var lib: LibraryStore
+
+    /// 用户手动拖动后的列宽（列 index -> 宽度）；没拖过就用自适应宽度
+    @State private var manualWidths: [Int: CGFloat] = [:]
 
     /// 每列选中的那一项；只影响列的展开，不改变"当前位置"
     private var chain: [Node] { lib.columnChain }
@@ -25,19 +29,44 @@ struct FinderColumnView: View {
                     ForEach(Array(cols.enumerated()), id: \.offset) { index, items in
                         column(items: items, index: index)
                             .id(index)
-                        Rectangle()
-                            .fill(Color.primary.opacity(0.08))
-                            .frame(width: 1)
+                        ColumnResizer(
+                            currentWidth: widthFor(index: index, items: items),
+                            onWidthChange: { manualWidths[index] = $0 }
+                        )
                     }
                 }
             }
             .onChange(of: cols.count) { _, newCount in
+                // 列数变了，丢掉越界的手动宽度，避免错位
+                manualWidths = manualWidths.filter { $0.key < newCount }
                 guard newCount > 0 else { return }
                 withAnimation(.easeOut(duration: 0.18)) {
                     proxy.scrollTo(newCount - 1, anchor: .trailing)
                 }
             }
         }
+    }
+
+    private func widthFor(index: Int, items: [Node]) -> CGFloat {
+        if let manual = manualWidths[index] { return manual }
+        return autoWidth(items: items)
+    }
+
+    /// 像 Finder 一样，按这一列最长的名字算宽度；夹在 180–420 之间
+    private func autoWidth(items: [Node]) -> CGFloat {
+        let font = NSFont.systemFont(ofSize: 12.5)
+        let iconW: CGFloat = 16
+        let gap: CGFloat = 6
+        let hPad: CGFloat = 8
+        let chevronW: CGFloat = 14
+        var widest: CGFloat = 0
+        for node in items {
+            let textW = (node.name as NSString).size(withAttributes: [.font: font]).width
+            var w = hPad * 2 + iconW + gap + textW
+            if node.isFolder && node.childCount > 0 { w += chevronW }
+            widest = max(widest, w)
+        }
+        return min(max(widest, 180), 420)
     }
 
     private func column(items: [Node], index: Int) -> some View {
@@ -88,7 +117,7 @@ struct FinderColumnView: View {
                 Color.clear.frame(height: 8)
             }
         }
-        .frame(width: 268)
+        .frame(width: widthFor(index: index, items: items))
     }
 
     private func select(_ node: Node, column index: Int) {
@@ -97,6 +126,40 @@ struct FinderColumnView: View {
         newChain.append(node)
         lib.columnChain = newChain
         lib.selectedNodeID = node.id
+    }
+}
+
+/// 列与列之间可拖动的分隔条：拖动改变左侧那一列的宽度（像 Finder 拉列宽）
+private struct ColumnResizer: View {
+    let currentWidth: CGFloat
+    let onWidthChange: (CGFloat) -> Void
+
+    @State private var startWidth: CGFloat? = nil
+    @State private var hovering = false
+
+    var body: some View {
+        Rectangle()
+            .fill(Color.primary.opacity(hovering ? 0.18 : 0.08))
+            .frame(width: 1)
+            .overlay {
+                // 1px 的线，但给 12px 宽的可抓区域，好拖
+                Color.clear
+                    .frame(width: 12)
+                    .contentShape(Rectangle())
+                    .onHover { inside in
+                        hovering = inside
+                        if inside { NSCursor.resizeLeftRight.push() } else { NSCursor.pop() }
+                    }
+                    .gesture(
+                        DragGesture(minimumDistance: 1)
+                            .onChanged { g in
+                                let base = startWidth ?? currentWidth
+                                if startWidth == nil { startWidth = base }
+                                onWidthChange(min(max(base + g.translation.width, 140), 620))
+                            }
+                            .onEnded { _ in startWidth = nil }
+                    )
+            }
     }
 }
 
