@@ -17,3 +17,6 @@ SparkleKeys/
 # Swift / Xcode
 .build/
 *.xcodeproj
+
+# 作者本地发布指南（含本机路径，不公开）
+PUBLISH.md
