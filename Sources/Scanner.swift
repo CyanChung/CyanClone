@@ -7,8 +7,9 @@ enum Scanner {
     static let minDepth = 1
     static let maxDepthLimit = 8
 
-    /// 单次扫描最多收录的条目数（安全阀，防止超大目录把索引文件撑爆）
-    static let maxNodes = 600_000
+    /// 单次扫描最多收录的条目数（安全阀）。120 万约合 ~210 MB 索引、~250 MB 内存，
+    /// 足够覆盖大多数素材盘，又不至于让启动加载和搜索明显变慢。
+    static let maxNodes = 1_200_000
 
     /// 系统噪声目录，Finder 里也基本看不到，直接跳过
     static let skipNames: Set<String> = [

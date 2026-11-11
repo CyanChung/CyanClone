@@ -38,7 +38,7 @@ enum AboutPanel {
 
 private struct AboutView: View {
     /// 发布日：写死在这里，改版时跟着版本号一起改
-    private static let releaseDate = "2026.11.10"
+    private static let releaseDate = "2026.11.11"
 
     private var version: String {
         let v = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
