@@ -20,3 +20,6 @@ SparkleKeys/
 
 # 作者本地发布指南（含本机路径，不公开）
 PUBLISH.md
+
+# 临时导出
+exports/
